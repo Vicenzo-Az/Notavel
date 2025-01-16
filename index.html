@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Metadados da página -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notável - Escreva o extraordinário</title>
+
+    <!-- Link para o arquivo de estilos CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Inclusão de scripts JavaScript -->
+    <script defer src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+</head>
+<body>
+    <!-- Página de Login -->
+    <img 
+        src="Images/meelika-marzzarella-BOjIwVVtu-8-unsplash.jpg" 
+        alt="Imagem de fundo representando inspiração e criatividade"
+        class="hidden-image" 
+    >
+
+    <!-- Container de login -->
+    <div id="login-page" class="login-container">
+        <div class="login-content">
+            <!-- Seção de boas-vindas -->
+            <div class="welcome-section">
+                <h1 class="login-title">Notável</h1>
+            </div>
+
+            <!-- Formulário de login -->
+            <form id="login-form" class="login-form">
+                <p>Bem-vindo</p>
+                <input type="text" id="username" placeholder="Nome de Usuário">
+                <input type="password" id="password" placeholder="Senha">
+                <button type="submit">Entrar</button>
+                <a href="#" class="forgot-password">Esqueci minha senha</a>
+                <a href="#" class="create-account">Criar Conta</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Página principal da aplicação -->
+    <div class="main-container" style="display: none;">
+        <!-- Cabeçalho da aplicação -->
+        <header class="main-header">
+            <div class="header-left">
+                <h1 id="app-name">Notável</h1>
+            </div>
+            <div class="header-right">
+                <!-- Botão de configurações da conta -->
+                <button id="account-button" class="profile-circle">⚙</button>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- Sidebar de notas -->
+            <aside id="notes-sidebar">
+                <div class="notes-toolbar">
+                    <!-- Botões para interação com a sidebar -->
+                    <button id="menu-button">☰</button>
+                    <button id="search-button">🔍</button>
+                    <button id="new-note-button">＋</button>
+                </div>
+                <div id="menu-options" class="menu-options hidden">
+                    <!-- Opções do menu -->
+                    <button id="save-option">Salvar</button>
+                    <button id="import-option">Importar</button>
+                    <button id="duplicate-option">Duplicar</button>
+                    <button id="export-option">Exportar em PDF</button>
+                </div>                
+                <div class="note-list">
+                    <!-- Itens de notas existentes -->
+                    <div class="note-item">
+                        <div class="note-preview">
+                            <h4 class="note-title">Nota 1</h4>
+                            <p class="note-content">Conteúdo da nota 1...</p>
+                        </div>
+                        <button class="delete-note">🗑️</button>
+                    </div>
+                    <div class="note-item">
+                        <div class="note-preview">
+                            <h4 class="note-title">Nota 2</h4>
+                            <p class="note-content">Conteúdo da nota 2...</p>
+                        </div>
+                        <button class="delete-note">🗑️</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Popup de configurações da conta -->
+            <div class="account-popup hidden">
+                <div class="popup-content">
+                    <h3>Configurações de Conta</h3>
+                    <div class="popup-option">
+                        <button id="change-photo-btn">Trocar Foto de Perfil</button>
+                    </div>
+                    <div class="popup-option">
+                        <button id="change-name-password-btn">Trocar Nome e Senha</button>
+                    </div>
+                    <div class="popup-option">
+                        <button id="logout-btn">Sair</button>
+                    </div>
+                    <button class="close-popup-btn">Fechar</button>
+                </div>
+            </div>            
+
+            <!-- Editor de notas -->
+            <section id="note-editor" class="hidden">
+                <input type="text" id="note-title" placeholder="Título da Nota">
+                <textarea id="note-body" placeholder="Digite aqui..."></textarea>
+                <button id="save-note-button">Salvar</button>
+            </section>
+
+            <!-- Placeholder para quando nenhuma nota estiver selecionada -->
+            <section id="note-placeholder">
+                <p>Selecione ou crie uma nota para começar.</p>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

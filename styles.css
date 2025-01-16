@@ -1,0 +1,558 @@
+/* Estilos globais */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212; /* Verde azulado escuro */
+    color: #e0e0e0; /* Texto claro */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden; /* Evitar rolagem na página principal */
+}
+
+/* Estilos do login */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: #ffffff;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 300px;
+}
+
+#login-form input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#login-form button {
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #66bb6a; /* Verde claro */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#login-form button:hover {
+    background-color: #388e3c; /* Verde mais escuro */
+}
+
+/* Estilos principais */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Cabeçalho */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #388e3c; /* Verde escuro */
+    color: #fff;
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.header-right .profile-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #333; /* Fundo escuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #66bb6a; /* Verde claro */
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Conteúdo principal */
+.content {
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+    height: 100vh; /* Garante que a sidebar ocupe toda a altura da tela */
+    overflow-y: auto; /* Adiciona a rolagem vertical */
+    background-color: #1e1e1e; /* Fundo escuro */
+    padding: 10px;
+    box-sizing: border-box; /* Inclui padding e bordas no cálculo da altura */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Barra lateral */
+#notes-sidebar {
+    width: 300px;
+    background-color: #1e1e1e; /* Fundo escuro */
+    border-right: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Permitir rolagem independente */
+}
+
+.notes-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #2e2e2e; /* Verde escuro suave */
+}
+
+.notes-toolbar button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #e0e0e0; /* Texto claro */
+}
+
+.note-list {
+    max-height: calc(100vh - 40px); /* Ajusta a altura da lista de notas */
+    overflow-y: auto; /* Adiciona a rolagem para a lista de notas */
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.menu-options {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    background-color: #2e2e2e; /* Fundo escuro */
+    border: 1px solid #333;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.menu-options button {
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1px solid #333;
+    background-color: #2e2e2e; /* Fundo escuro */
+    cursor: pointer;
+    text-align: left;
+    color: #e0e0e0; /* Texto claro */
+}
+
+.menu-options button:hover {
+    background-color: #424242; /* Destaque ao passar o mouse */
+}
+
+.hidden {
+    display: none;
+}
+
+/* Notas estilizadas como pastas */
+.note-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #2e2e2e; /* Fundo escuro */
+    border: 1px solid #333;
+    border-radius: 10px; /* Cantos arredondados */
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    color: #e0e0e0; /* Texto claro */
+    position: relative; /* Necessário para posicionar a lixeira */
+}
+
+.note-item:hover {
+    background-color: #424242; /* Destaque ao passar o mouse */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+}
+
+.note-preview {
+    flex: 1;
+    margin-right: 30px; /* Espaço para garantir que o texto não ultrapasse a lixeira */
+    overflow: hidden; /* Garante que o texto não quebre ou ultrapasse */
+    text-overflow: ellipsis; /* Adiciona reticências ao texto longo */
+    white-space: nowrap; /* Impede quebra de linha */
+}
+
+.note-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    color: #e0e0e0; /* Texto claro */
+}
+
+.note-content {
+    font-size: 14px;
+    color: #b0b0b0; /* Texto menos destacado */
+    margin: 0;
+}
+
+.delete-note {
+    flex-shrink: 0; /* Garante que o ícone da lixeira não diminua de tamanho */
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #dc3545;
+    cursor: pointer;
+    margin-left: 10px; /* Espaçamento consistente */
+    position: absolute; /* Fixamos o ícone no canto direito */
+    right: 15px; /* Distância da borda direita */
+    top: 50%; /* Centraliza verticalmente */
+    transform: translateY(-50%); /* Ajusta a posição vertical */
+}
+
+/* Editor de notas */
+#note-editor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #121212; /* Fundo escuro */
+    position: relative;
+}
+
+#note-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background-color: #1e1e1e; /* Fundo escuro */
+    color: #e0e0e0; /* Texto claro */
+}
+
+#note-body {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background-color: #1e1e1e; /* Fundo escuro */
+    color: #e0e0e0; /* Texto claro */
+    resize: none;
+}
+
+#save-note-button {
+    position: absolute;
+    top: 23px;
+    right: 25px;
+    padding: 10px 22px;
+    font-size: 16px;
+    background-color: #28a745; /* Verde */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 10;
+}
+.menu-options button:last-child {
+    border-bottom: none;
+}
+
+#save-note-button:hover {
+    background-color: #218838; /* Verde mais escuro */
+}
+
+/* Placeholder */
+#note-placeholder {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: #666;
+}
+
+/* Fundo com imagem */
+#login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url(Images/meelika-marzzarella-BOjIwVVtu-8-unsplash.jpg);
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+}
+
+.hidden-image {
+    display: none;
+}
+
+/* Conteúdo centralizado */
+.login-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: left;
+    background: rgba(0, 0, 0, 0.8); /* Fundo semi-transparente */
+    padding: 2%;
+    padding-top: 9%;
+    border-radius: 10px;
+    width: 300px;
+}
+
+/* Estilo do título "Notável" */
+.welcome-section h1 {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 0;
+    color: #fff;
+}
+
+.login-title {
+    position: absolute; /* Permite ajustar sua posição */
+    top: 23%; /* Distância do topo da tela */
+    left: 50%; /* Centraliza horizontalmente */
+    transform: translate(-50%, -50%); /* Ajusta para alinhar com o centro */
+    font-size: 60px; /* Tamanho do texto */
+    font-weight: bold; /* Negrito */
+    color: white; /* Cor do texto */
+    text-align: center; /* Centraliza o texto no próprio elemento */
+}
+
+/* Formulário */
+.login-form p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.login-form input,
+.login-form button {
+    width: 100%; /* Mesma largura */
+    padding: 10px; /* Mesma altura */
+    margin-bottom: 15px; /* Espaçamento uniforme */
+    border: none;
+    border-radius: 5px; /* Cantos arredondados iguais */
+    font-size: 16px; /* Tamanho de fonte consistente */
+    box-sizing: border-box; /* Inclui padding e bordas na largura total */
+}
+
+/* Específico para o botão "Entrar" */
+.login-form button {
+    width: 50%; /* Largura do botão */
+    margin: 0 auto; /* Centraliza horizontalmente */
+    display: block; /* Necessário para que o margin funcione corretamente */
+    padding: 10px; /* Altura do botão */
+    background-color: #28a745; /* Cor de fundo */
+    color: white; /* Cor do texto */
+    font-size: 16px; /* Tamanho do texto */
+    border: none; /* Remove a borda padrão */
+    border-radius: 5px; /* Deixa os cantos arredondados */
+    cursor: pointer; /* Mostra o cursor de clique */
+}
+
+.login-form button:hover {
+    background-color: #218838; /* Cor de fundo ao passar o mouse */
+}
+
+/* Links abaixo do botão */
+.login-form a {
+    display: block;
+    margin-top: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    color: #ddd;
+    text-align: center;
+}
+
+.login-form .create-account {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.login-form a:hover {
+    color: #fff;
+}
+
+/* Estilos do popup */
+.account-popup {
+    display: none; /* Inicialmente escondido */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo escuro semi-transparente */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+.popup-option {
+    margin: 15px 0;
+}
+
+.popup-option button {
+    background-color: #66bb6a; /* Verde claro */
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.popup-option button:hover {
+    background-color: #388e3c; /* Verde mais escuro */
+}
+
+.close-popup-btn {
+    margin-top: 20px;
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.close-popup-btn:hover {
+    background-color: #c82333; /* Vermelho escuro */
+}
+
+/* Estilos do popup */
+.account-popup {
+    display: none; /* Inicialmente escondido */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo escuro semi-transparente */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+.popup-option {
+    margin: 15px 0;
+}
+
+.popup-option button {
+    background-color: #66bb6a; /* Verde claro */
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.popup-option button:hover {
+    background-color: #388e3c; /* Verde mais escuro */
+}
+
+.close-popup-btn {
+    margin-top: 20px;
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.close-popup-btn:hover {
+    background-color: #c82333; /* Vermelho escuro */
+}
+
+/* Telas maiores que 768px (tablets e desktops) */
+@media (min-width: 768px) {
+    .login-page #login-page {
+        flex-direction: row; /* Layout horizontal em telas maiores */
+        padding: 0 20px;
+    }
+
+    .login-page .login-content {
+        width: 400px; /* Aumenta o tamanho do formulário */
+        padding: 4%; /* Ajusta o espaçamento interno */
+    }
+
+    .login-page #login-form {
+        width: 100%; /* Expande para ocupar todo o espaço disponível */
+    }
+
+    .notes-page .main-header {
+        padding: 20px 40px; /* Aumenta o espaçamento do cabeçalho */
+    }
+
+    .notes-page #notes-sidebar {
+        width: 350px; /* Sidebar mais larga em telas maiores */
+    }
+
+    .notes-page #note-editor {
+        padding: 30px; /* Ajusta o espaçamento interno do editor */
+    }
+
+    .notes-page .note-item {
+        padding: 20px; /* Mais espaçamento nas notas */
+    }
+}
+
+/* Telas maiores que 1200px (desktops grandes) */
+@media (min-width: 1200px) {
+    .login-page #login-page {
+        padding: 0 50px;
+    }
+
+    .login-page .login-content {
+        width: 500px; /* Formulário ainda maior */
+        padding: 5%; /* Ajusta o espaçamento interno */
+    }
+
+    .notes-page #notes-sidebar {
+        width: 400px; /* Sidebar mais larga */
+    }
+
+    .notes-page .note-item {
+        padding: 25px; /* Espaçamento maior nas notas */
+    }
+
+    .notes-page #note-editor {
+        padding: 40px; /* Mais espaço no editor */
+        font-size: 18px; /* Texto maior para melhor leitura */
+    }
+}
