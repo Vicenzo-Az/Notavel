@@ -23,45 +23,73 @@ let currentNoteId = null; // Nenhuma nota selecionada inicialmente
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
-    renderNotes(); // Renderiza as notas existentes (inicialmente vazio)
+    fetchNotes(); // Carrega as notas do servidor
     closeEditor(); // Fecha o editor ao carregar a página
 });
 
-// Login
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    loginPage.style.display = 'none';
-    mainContainer.style.display = 'flex';
-});
+// Fetch notes from the server
+async function fetchNotes() {
+    try {
+        const response = await fetch('notes.php');
+        notes = await response.json();
+        renderNotes();
+    } catch (error) {
+        console.error('Erro ao carregar notas:', error);
+    }
+}
 
 // Create a new note
-newNoteButton.addEventListener('click', () => {
-    const newNote = {
-        id: Date.now(),
-        title: 'Nova Nota',
-        content: ''
-    };
-    notes.push(newNote);
-    currentNoteId = newNote.id; // Define a nova nota como selecionada
-    renderNotes();
-    openEditor(newNote);
+newNoteButton.addEventListener('click', async () => {
+    try {
+        const response = await fetch('notes.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `title=Nova Nota&content=`
+        });
+        
+        if (response.ok) {
+            await fetchNotes(); // Recarrega as notas após criar uma nova
+        } else {
+            throw new Error('Erro ao criar nota');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao criar nova nota');
+    }
 });
 
 // Save the current note
-saveNoteButton.addEventListener('click', () => {
+saveNoteButton.addEventListener('click', async () => {
+    if (!currentNoteId) return;
+
     const titleInput = document.getElementById('note-title');
     const bodyInput = document.getElementById('note-body');
 
-    const note = notes.find(note => note.id === currentNoteId);
-    if (note) {
-        note.title = titleInput.value;
-        note.content = bodyInput.value;
-        renderNotes();
+    try {
+        const response = await fetch('notes.php', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `id=${currentNoteId}&title=${encodeURIComponent(titleInput.value)}&content=${encodeURIComponent(bodyInput.value)}`
+        });
+
+        if (response.ok) {
+            await fetchNotes(); // Recarrega as notas após salvar
+            alert('Nota salva com sucesso!');
+        } else {
+            throw new Error('Erro ao salvar nota');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao salvar nota');
     }
 });
 
 // Salvar nota atual
-saveOption.addEventListener('click', () => {
+saveOption.addEventListener('click', async () => {
     if (!currentNoteId) {
         alert('Nenhuma nota aberta para salvar.');
         return;
@@ -74,8 +102,21 @@ saveOption.addEventListener('click', () => {
 
         note.title = titleInput.value;
         note.content = bodyInput.value;
-        renderNotes(); // Atualiza a lista de notas
-        alert('Nota salva com sucesso!');
+
+        try {
+            const response = await fetch('notes.php', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `id=${note.id}&title=${encodeURIComponent(note.title)}&content=${encodeURIComponent(note.content)}`
+            });
+            const result = await response.text();
+            alert(result);
+            renderNotes(); // Atualiza a lista de notas
+        } catch (error) {
+            console.error('Erro ao salvar nota:', error);
+        }
     }
 });
 
@@ -241,12 +282,11 @@ exportOption.addEventListener('click', () => {
     doc.save(`${note.title || 'nota'}.pdf`); // Salva o arquivo com o título ou "nota" como padrão
 });
 
-
 // Render notes in the sidebar
-function renderNotes() {
+function renderNotes(filteredNotes = notes) {
     noteList.innerHTML = '';
 
-    if (notes.length === 0) {
+    if (filteredNotes.length === 0) {
         const noNotesMessage = document.createElement('p');
         noNotesMessage.textContent = 'Nenhuma nota disponível. Crie uma nova nota para começar!';
         noNotesMessage.style.color = '#666';
@@ -257,21 +297,25 @@ function renderNotes() {
         return;
     }
 
-    notes.forEach(note => {
+    filteredNotes.forEach(note => {
         const noteItem = document.createElement('div');
         noteItem.classList.add('note-item');
         noteItem.dataset.id = note.id;
 
         const notePreview = document.createElement('div');
         notePreview.classList.add('note-preview');
-        notePreview.innerHTML = `<h4 class="note-title">${note.title}</h4><p class="note-content">${note.content.substring(0, 50)}...</p>`;
+        notePreview.innerHTML = `
+            <h4 class="note-title">${note.title}</h4>
+            <p class="note-content">${note.content.substring(0, 50)}...</p>
+            <p class="note-date">Modificado em: ${new Date(note.updated_at).toLocaleString()}</p>
+        `;
 
         const deleteButton = document.createElement('button');
         deleteButton.classList.add('delete-note');
         deleteButton.textContent = '🗑️';
-        deleteButton.addEventListener('click', (e) => {
+        deleteButton.addEventListener('click', async (e) => {
             e.stopPropagation(); // Evita a abertura do editor ao clicar no botão de deletar
-            deleteNote(note.id);
+            await deleteNote(note.id);
         });
 
         noteItem.appendChild(notePreview);
@@ -301,12 +345,28 @@ function closeEditor() {
 }
 
 // Delete a note
-function deleteNote(noteId) {
-    notes = notes.filter(note => note.id !== noteId);
-    if (currentNoteId === noteId) {
-        closeEditor(); // Fecha o editor se a nota deletada estava ativa
+async function deleteNote(noteId) {
+    try {
+        const response = await fetch('notes.php', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `id=${noteId}`
+        });
+
+        if (response.ok) {
+            if (currentNoteId === noteId) {
+                closeEditor();
+            }
+            await fetchNotes(); // Recarrega as notas após deletar
+        } else {
+            throw new Error('Erro ao deletar nota');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao deletar nota');
     }
-    renderNotes();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -315,7 +375,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const closePopupBtn = document.querySelector('.close-popup-btn');
     const changePhotoBtn = document.getElementById('change-photo-btn');
     const changeNamePasswordBtn = document.getElementById('change-name-password-btn');
+    const saveNamePasswordBtn = document.getElementById('save-name-password-btn');
+    const namePasswordFields = document.getElementById('name-password-fields');
     const logoutBtn = document.getElementById('logout-btn');
+    const searchButton = document.getElementById('search-button');
+    const searchInput = document.createElement('input');
 
     // Abrir o popup ao clicar na foto do perfil
     profileButton.addEventListener('click', function() {
@@ -327,22 +391,96 @@ document.addEventListener('DOMContentLoaded', function() {
         popup.style.display = 'none';
     });
 
+    // Mostrar campos de nome e senha ao clicar no botão "Trocar Nome e Senha"
+    changeNamePasswordBtn.addEventListener('click', function() {
+        namePasswordFields.classList.toggle('hidden');
+    });
+
     // Funcionalidade para trocar a foto de perfil
     changePhotoBtn.addEventListener('click', function() {
-        // Aqui você pode adicionar a lógica para trocar a foto
-        alert('Trocar Foto de Perfil');
+        document.getElementById('profile-photo').click();
     });
 
-    // Funcionalidade para trocar nome e senha
-    changeNamePasswordBtn.addEventListener('click', function() {
-        // Aqui você pode abrir um formulário ou lógica para trocar nome e senha
-        alert('Trocar Nome e Senha');
+    document.getElementById('profile-photo').addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('profile_photo', file);
+
+            try {
+                const response = await fetch('upload_photo.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    const newPhotoUrl = 'uploads/' + result.fileName;
+                    document.getElementById('current-photo').src = newPhotoUrl;
+                    document.getElementById('current-photo-popup').src = newPhotoUrl;
+                    alert('Foto de perfil atualizada com sucesso!');
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao atualizar foto de perfil');
+            }
+        }
     });
 
-// Event listener para o botão de logout
-logoutBtn.addEventListener('click', () => {
-    // Ocultar a página principal e exibir a página de login
-    mainContainer.style.display = 'none';
-    loginPage.style.display = 'flex';
-});
+    // Funcionalidade para salvar nome e senha
+    saveNamePasswordBtn.addEventListener('click', async function() {
+        const newUsername = document.getElementById('new-username').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        if (newPassword !== confirmPassword) {
+            alert('As senhas não coincidem!');
+            return;
+        }
+
+        try {
+            const response = await fetch('update_user.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `username=${newUsername}&password=${newPassword}`
+            });
+            const result = await response.text();
+            alert(result);
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro ao atualizar dados do usuário');
+        }
+    });
+
+    // Event listener para o botão de logout
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await fetch('logout.php');
+            window.location.href = 'login.html';
+        } catch (error) {
+            console.error('Erro:', error);
+        }
+    });
+
+    // Adicionar campo de pesquisa ao clicar no botão de pesquisa
+    searchButton.addEventListener('click', () => {
+        if (!searchInput.parentNode) {
+            searchInput.type = 'text';
+            searchInput.placeholder = 'Pesquisar notas...';
+            searchInput.style.marginLeft = '10px';
+            searchButton.parentNode.insertBefore(searchInput, searchButton.nextSibling);
+        }
+        searchInput.classList.toggle('hidden');
+        searchInput.focus();
+    });
+
+    // Filtrar notas ao digitar no campo de pesquisa
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        const filteredNotes = notes.filter(note => note.title.toLowerCase().includes(query));
+        renderNotes(filteredNotes);
+    });
 });

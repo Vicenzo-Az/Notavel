@@ -12,11 +12,10 @@ body {
 
 /* Estilos do login */
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    background-color: #ffffff;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #login-form {
@@ -195,14 +194,14 @@ body {
 }
 
 .note-title {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     margin: 0;
     color: #e0e0e0; /* Texto claro */
 }
 
 .note-content {
-    font-size: 14px;
+    font-size: 16px;
     color: #b0b0b0; /* Texto menos destacado */
     margin: 0;
 }
@@ -290,10 +289,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url(Images/meelika-marzzarella-BOjIwVVtu-8-unsplash.jpg);
-    background-size: cover;
-    background-position: center;
-    color: #fff;
+    background: linear-gradient(to right, #4caf50, #81c784);
 }
 
 .hidden-image {
@@ -499,6 +495,14 @@ body {
     background-color: #c82333; /* Vermelho escuro */
 }
 
+.tab {
+    display: none;
+}
+
+.tab.active {
+    display: block;
+}
+
 /* Telas maiores que 768px (tablets e desktops) */
 @media (min-width: 768px) {
     .login-page #login-page {
@@ -555,4 +559,105 @@ body {
         padding: 40px; /* Mais espaço no editor */
         font-size: 18px; /* Texto maior para melhor leitura */
     }
+}
+
+/* Estilos do popup de configurações da conta */
+.account-popup {
+    display: none; /* Inicialmente escondido */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo escuro semi-transparente */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+.popup-option {
+    margin: 15px 0;
+}
+
+.popup-option label {
+    display: block;
+    margin-bottom: 5px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.popup-option input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #444;
+    color: #fff;
+}
+
+.popup-option button {
+    background-color: #66bb6a; /* Verde claro */
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.popup-option button:hover {
+    background-color: #388e3c; /* Verde mais escuro */
+}
+
+.close-popup-btn {
+    margin-top: 20px;
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.close-popup-btn:hover {
+    background-color: #c82333; /* Vermelho escuro */
+}
+
+/* Estilos do campo de pesquisa */
+#search-button + input[type="text"] {
+    display: none;
+    padding: 5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #1e1e1e; /* Fundo escuro */
+    color: #e0e0e0; /* Texto claro */
+}
+
+#search-button + input[type="text"].hidden {
+    display: none;
+}
+
+#search-button + input[type="text"]:not(.hidden) {
+    display: inline-block;
+}
+
+/* Estilos da data de modificação */
+.note-date {
+    font-size: 15px; /* Diminui o tamanho da fonte */
+    color: #888; /* Texto menos destacado */
+    margin-top: 5px;
+    white-space: normal; /* Permite quebra de linha */
+    word-wrap: break-word; /* Garante que o texto respeite o limite da direita */
 }
